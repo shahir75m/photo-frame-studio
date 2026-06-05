@@ -1,0 +1,6 @@
+{
+  "name": "Frame It",
+  "description": "A feature-rich picture framing application supporting Malayalam. Users can upload, adjust, filter, and apply beautiful frames to their photos, while administrators can design and add custom frame overlays and border styles.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

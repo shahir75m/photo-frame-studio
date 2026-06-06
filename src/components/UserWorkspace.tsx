@@ -15,23 +15,13 @@ export default function UserWorkspace({ frames }: UserWorkspaceProps) {
 
   // Selected Frame State (default to first frame)
   const [selectedFrame, setSelectedFrame] = useState<Frame | null>(null);
-  const [selectedRatio, setSelectedRatio] = useState<'1:1' | '9:16'>('1:1');
 
-  // Filter frames based on selected ratio
-  const filteredFrames = frames.filter(f => f.aspectRatio === selectedRatio);
-
-  // Auto-select a frame when changing aspect ratio to stay consistent
+  // Auto-select the first frame when frames load
   useEffect(() => {
-    if (filteredFrames.length > 0) {
-      if (selectedFrame && selectedFrame.aspectRatio === selectedRatio) {
-        // preserve selection if it is already matching current ratio
-      } else {
-        setSelectedFrame(filteredFrames[0]);
-      }
-    } else {
-      setSelectedFrame(null);
+    if (frames.length > 0 && !selectedFrame) {
+      setSelectedFrame(frames[0]);
     }
-  }, [selectedRatio, frames]);
+  }, [frames]);
 
   // Photo State
   const [photoSrc, setPhotoSrc] = useState<string | null>(null);
@@ -256,29 +246,6 @@ export default function UserWorkspace({ frames }: UserWorkspaceProps) {
     <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 text-zinc-100" id="user-workspace">
       {/* Visual Canvas Sandbox Left Area */}
       <div className="xl:col-span-7 flex flex-col items-center">
-        {/* Dynamic Aspect Ratio Toolbar */}
-        <div className="w-full bg-zinc-900 border border-zinc-800 rounded-none p-3.5 flex flex-wrap gap-2.5 justify-between items-center mb-6 shadow-none">
-          <span className="text-xs font-bold uppercase tracking-widest text-zinc-400 pl-1 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 bg-amber-500 animate-ping"></span>
-            {t.aspectRatio}
-          </span>
-          <div className="flex bg-zinc-950 rounded-none p-1 border border-zinc-850" id="ratio-selector">
-            {(['1:1', '9:16'] as const).map((ratio) => (
-              <button
-                key={ratio}
-                onClick={() => setSelectedRatio(ratio)}
-                style={{ contentVisibility: 'auto' }}
-                className={`px-4 py-1.5 text-xs font-mono font-bold rounded-none transition-all uppercase tracking-wider ${
-                  selectedRatio === ratio
-                    ? 'bg-amber-500 text-zinc-950 shadow-none'
-                    : 'text-zinc-500 hover:text-zinc-200'
-                }`}
-              >
-                {ratio === '1:1' ? '1:1 Square (Feed)' : '9:16 Vertical (Status / Story)'}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Framing Workspace Block */}
         <div 
@@ -399,14 +366,14 @@ export default function UserWorkspace({ frames }: UserWorkspaceProps) {
             </h3>
           </div>
 
-          {filteredFrames.length === 0 ? (
+          {frames.length === 0 ? (
             <div className="text-center py-10 text-zinc-500 text-xs bg-zinc-950 border border-zinc-800 rounded-none leading-relaxed font-mono">
-              No custom overlays formatted in {selectedRatio} ratio yet.
-              <p className="text-[10px] text-zinc-650 mt-2">{t.addYourOwnFramePrompt}</p>
+              <p className="font-bold uppercase tracking-widest">No frames added yet.</p>
+              <p className="text-[10px] text-zinc-600 mt-2">{t.addYourOwnFramePrompt}</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-2.5 max-h-[240px] overflow-y-auto pr-1" id="frame-preset-grid">
-              {filteredFrames.map((frame) => {
+            <div className="grid grid-cols-1 gap-2.5 max-h-[280px] overflow-y-auto pr-1" id="frame-preset-grid">
+              {frames.map((frame) => {
                 const isSelected = selectedFrame?.id === frame.id;
                 return (
                   <button
@@ -433,10 +400,8 @@ export default function UserWorkspace({ frames }: UserWorkspaceProps) {
                         <span className="text-[9px] uppercase font-mono font-bold tracking-wider text-zinc-500">
                           {frame.aspectRatio}
                         </span>
-                        <span className={`text-[8px] px-1 py-0.5 rounded-none font-black uppercase tracking-widest ${
-                          frame.isDefault ? 'bg-zinc-900 text-zinc-600 border border-zinc-850' : 'bg-amber-500/20 text-amber-300 border border-amber-500/10'
-                        }`}>
-                          {frame.isDefault ? t.defaultTag : t.customTag}
+                        <span className="text-[8px] px-1 py-0.5 rounded-none font-black uppercase tracking-widest bg-amber-500/20 text-amber-300 border border-amber-500/10">
+                          {t.customTag}
                         </span>
                       </div>
 

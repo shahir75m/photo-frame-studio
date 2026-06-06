@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Frame } from './types';
-import { DEFAULT_FRAMES } from './data/defaultFrames';
 import { TRANSLATIONS } from './utils/translation';
 import UserWorkspace from './components/UserWorkspace';
 import AdminPanel from './components/AdminPanel';
@@ -19,14 +18,14 @@ export default function App() {
         const response = await fetch('/api/frames');
         if (response.ok) {
           const customFrames: Frame[] = await response.json();
-          setFrames([...DEFAULT_FRAMES, ...customFrames]);
+          setFrames(customFrames);
         } else {
           console.error("Failed to fetch frames from backend");
-          setFrames(DEFAULT_FRAMES);
+          setFrames([]);
         }
       } catch (e) {
-        console.error("Error connecting to backend, falling back to defaults.", e);
-        setFrames(DEFAULT_FRAMES);
+        console.error("Error connecting to backend.", e);
+        setFrames([]);
       }
     };
     

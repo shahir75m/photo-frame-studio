@@ -454,57 +454,12 @@ export default function UserWorkspace({ frames }: UserWorkspaceProps) {
         {/* Workspace controls loaded ONLY if user has uploaded a photo */}
         {photoSrc ? (
           <div className="space-y-4">
-            
-            {/* Transform Controls */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-none shadow-none p-5 space-y-5">
-              <div className="flex items-center gap-2 border-b border-zinc-850 pb-3 mb-1">
-                <Move className="w-4 h-4 text-zinc-500" />
-                <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400">
-                  {t.controlsHeading}
-                </h4>
-              </div>
-
-              {/* Zoom Scale */}
-              <div>
-                <div className="flex justify-between text-xs text-zinc-400 mb-2 font-mono uppercase tracking-wider">
-                  <span className="font-bold">{t.zoom}</span>
-                  <span className="font-bold text-amber-500">{adjustments.zoom.toFixed(2)}x</span>
-                </div>
-                <input
-                  type="range"
-                  min="0.4"
-                  max="4.0"
-                  step="0.05"
-                  value={adjustments.zoom}
-                  onChange={(e) => setAdjustments(prev => ({ ...prev, zoom: Number(e.target.value) }))}
-                  className="w-full accent-amber-500 cursor-pointer h-1 bg-zinc-950 rounded-none outline-none appearance-none"
-                />
-              </div>
-
-              {/* Rotation Slider */}
-              <div>
-                <div className="flex justify-between text-xs text-zinc-400 mb-2 font-mono uppercase tracking-wider">
-                  <span className="font-bold">{t.rotate}</span>
-                  <span className="font-bold text-amber-500">{adjustments.rotation}°</span>
-                </div>
-                <input
-                  type="range"
-                  min="-180"
-                  max="180"
-                  step="1"
-                  value={adjustments.rotation}
-                  onChange={(e) => setAdjustments(prev => ({ ...prev, rotation: Number(e.target.value) }))}
-                  className="w-full accent-amber-500 cursor-pointer h-1 bg-zinc-950 rounded-none outline-none appearance-none"
-                />
-              </div>
-
-              {/* Panning instructions */}
-              <div className="p-3.5 bg-amber-500/[0.02] text-zinc-450 rounded-none text-xs flex gap-2.5 border border-amber-500/10 leading-relaxed font-mono">
-                <Move className="w-4 h-4 flex-shrink-0 text-amber-500 mt-0.5" />
-                <span>
-                  Tip: Drag the photo inside the canvas space with your cursor/touch to align it perfectly.
-                </span>
-              </div>
+            {/* Panning instructions */}
+            <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-none text-xs flex gap-2.5 leading-relaxed font-mono text-zinc-400">
+              <Move className="w-4 h-4 flex-shrink-0 text-amber-500 mt-0.5" />
+              <span>
+                Tip: Drag the photo inside the canvas space with your cursor/touch to align it perfectly.
+              </span>
             </div>
 
             {/* Core MASTER DOWNLOAD TRIGGER BUTTON */}
@@ -534,13 +489,13 @@ export default function UserWorkspace({ frames }: UserWorkspaceProps) {
           </div>
         ) : (
           /* Locked prompt to invite user behavior */
-          <div className="bg-zinc-900 border border-zinc-800 rounded-none p-8 text-center text-zinc-600">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-none p-8 text-center text-zinc-650">
             <ImageIcon className="w-8 h-8 mx-auto mb-2 text-zinc-750" />
             <span className="block text-xs font-mono uppercase tracking-wider text-zinc-400">
               No Active Workspace
             </span>
-            <p className="text-xs text-zinc-600 max-w-xs mx-auto mt-2 leading-relaxed">
-              Upload your photo inside the viewport on the left to unlock manual alignment and rendering mechanisms.
+            <p className="text-xs text-zinc-500 max-w-xs mx-auto mt-2 leading-relaxed">
+              Upload your photo inside the viewport on the left to see the preview and download the output.
             </p>
           </div>
         )}

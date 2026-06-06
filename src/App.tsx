@@ -72,6 +72,19 @@ export default function App() {
     }
   };
 
+  const handleAdminTabClick = () => {
+    if (activeTab === 'admin') {
+      setActiveTab('user');
+    } else {
+      const pass = prompt('Enter Admin Password:');
+      if (pass === 'madrasa') {
+        setActiveTab('admin');
+      } else if (pass !== null) {
+        alert('Incorrect password!');
+      }
+    }
+  };
+
   const t = TRANSLATIONS;
 
   return (
@@ -101,7 +114,7 @@ export default function App() {
           {/* Minimalist Admin Config Trigger - Settings Icon only */}
           <div className="flex items-center gap-2.5">
             <button
-              onClick={() => setActiveTab(activeTab === 'user' ? 'admin' : 'user')}
+              onClick={handleAdminTabClick}
               title={activeTab === 'user' ? t.adminTitle : 'Go back to Framer'}
               className={`p-2.5 border transition-all rounded-none ${
                 activeTab === 'admin' 

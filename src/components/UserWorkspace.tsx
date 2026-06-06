@@ -56,6 +56,7 @@ export default function UserWorkspace({ frames }: UserWorkspaceProps) {
   // Refs for tracking elements
   const fileInputRef = useRef<HTMLInputElement>(null);
   const photoImageRef = useRef<HTMLImageElement>(null);
+  const frameImageRef = useRef<HTMLImageElement>(null);
   const workspaceContainerRef = useRef<HTMLDivElement>(null);
 
   // Reset adjustments
@@ -143,33 +144,35 @@ export default function UserWorkspace({ frames }: UserWorkspaceProps) {
   };
 
   // Build high-resolution export Canvas
-  const handleDownload = async () => {
-    if (!photoSrc) {
+  const handleDownload = () => {
+    if (!photoSrc || !photoImageRef.current) {
       alert(t.noPhotoError);
       return;
     }
 
     if (!selectedFrame) return;
 
+    const img = photoImageRef.current;
+    const frameOverImg = frameImageRef.current;
+
+    if (!frameOverImg) {
+      alert("Frame overlay element not found. Please try again.");
+      return;
+    }
+
+    if (!img.complete || img.naturalWidth === 0) {
+      alert("User photo is still loading. Please try again.");
+      return;
+    }
+
+    if (!frameOverImg.complete || frameOverImg.naturalWidth === 0) {
+      alert("Frame overlay is still loading. Please try again.");
+      return;
+    }
+
     setIsRendering(true);
 
     try {
-      // 1. Create photo image object
-      const img = new Image();
-      img.src = photoSrc;
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = () => reject(new Error('Failed to load user photo'));
-      });
-
-      // 2. Load Frame transparent overlay image
-      const frameOverImg = new Image();
-      frameOverImg.src = selectedFrame.imageUrl;
-      await new Promise((resolve, reject) => {
-        frameOverImg.onload = resolve;
-        frameOverImg.onerror = () => reject(new Error('Failed to load frame overlay'));
-      });
-
       // 3. Define canvas resolution (High print output for beautiful resolution)
       // Instagram Post is 1080x1080 (1:1), Stories/Statuses are 1080x1920 (9:16)
       let canvasWidth = 1080;
@@ -201,12 +204,12 @@ export default function UserWorkspace({ frames }: UserWorkspaceProps) {
       ctx.save();
 
       // 4. Calculate photo centering & transformation inside the full frame area
-      const imgScaleW = canvasWidth / img.width;
-      const imgScaleH = canvasHeight / img.height;
+      const imgScaleW = canvasWidth / img.naturalWidth;
+      const imgScaleH = canvasHeight / img.naturalHeight;
       const fitScale = Math.max(imgScaleW, imgScaleH); // fill-cover mode
 
-      const drawW = img.width * fitScale * adjustments.zoom;
-      const drawH = img.height * fitScale * adjustments.zoom;
+      const drawW = img.naturalWidth * fitScale * adjustments.zoom;
+      const drawH = img.naturalHeight * fitScale * adjustments.zoom;
 
       // Translate photo context to center
       ctx.translate(canvasWidth / 2, canvasHeight / 2);
@@ -317,6 +320,7 @@ export default function UserWorkspace({ frames }: UserWorkspaceProps) {
               {/* Styled Transparent PNG/SVG overlay representing active custom frame */}
               {selectedFrame && (
                 <img 
+                  ref={frameImageRef}
                   src={selectedFrame.imageUrl}
                   alt="Transparent PNG layout overlay border"
                   className="absolute inset-0 w-full h-full object-fill z-10 pointer-events-none select-none"

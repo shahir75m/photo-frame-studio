@@ -157,15 +157,17 @@ export default function UserWorkspace({ frames }: UserWorkspaceProps) {
       // 1. Create photo image object
       const img = new Image();
       img.src = photoSrc;
-      await new Promise((resolve) => {
+      await new Promise((resolve, reject) => {
         img.onload = resolve;
+        img.onerror = () => reject(new Error('Failed to load user photo'));
       });
 
       // 2. Load Frame transparent overlay image
       const frameOverImg = new Image();
       frameOverImg.src = selectedFrame.imageUrl;
-      await new Promise((resolve) => {
+      await new Promise((resolve, reject) => {
         frameOverImg.onload = resolve;
+        frameOverImg.onerror = () => reject(new Error('Failed to load frame overlay'));
       });
 
       // 3. Define canvas resolution (High print output for beautiful resolution)
